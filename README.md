@@ -29,7 +29,7 @@ Write the following auth middlewares inside `api/auth/auth-middleware.js`:
 - [X] `restricted`
 - [X] `only`
 - [X] `checkUsernameExists`
-- [ ] `validateRoleName`
+- [X] `validateRoleName`
 
 #### 2C - Endpoints
 
