@@ -8,7 +8,7 @@ const restricted = (req, res, next) => {
         if (err) {
           next({
             status: 401,
-            message: 'Token invalid'
+            message: 'Token required'
           })
         } else {
           req.decodedJwt = decoded
@@ -18,22 +18,20 @@ const restricted = (req, res, next) => {
     } else {
         next({
           status: 401,
-          message: 'Token required'
+          message: 'Token invalid'
         })
     }
 }
 
 const only = role_name => (req, res, next) => {
-  /*
-    If the user does not provide a token in the Authorization header with a role_name
-    inside its payload matching the role_name passed to this function as its argument:
-    status 403
-    {
-      "message": "This is not for you"
-    }
-
-    Pull the decoded token from the req object, to avoid verifying it again!
-  */
+  if (req.decodedJwt.role_name === role_name) {
+    next()
+  } else {
+    next({
+      status: 403,
+      message: 'This is not for you'
+    })
+  }
 }
 
 
