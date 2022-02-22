@@ -22,13 +22,13 @@ router.post("/register", validateRoleName, async (req, res, next) => {
 });
 
 
-router.post("/login", checkUsernameExists, async (req, res, next) => {
+router.post("/login", checkUsernameExists, (req, res, next) => {
     const { password } = req.body
         if (bcrypt.compareSync(password, req.user.password)) {
             const token = buildToken(req.user)
                 res.json({
                     message: `${req.user.username} is back!`,
-                    token,
+                    token
                 })
             } else {
                 next({
