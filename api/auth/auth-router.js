@@ -4,19 +4,33 @@ const {
     checkUsernameExists,
     validateRoleName
 } = require('./auth-middleware');
+const buildToken = require('./auth-token-builder')
 
-router.post("/register", validateRoleName, (req, res, next) => {
-  /**
-    [POST] /api/auth/register { "username": "anna", "password": "1234", "role_name": "angel" }
+const Users = require('../users/users-model')
+const { BCRYPT_ROUNDS } = require('.././secrets/index')
 
-    response:
-    status 201
-    {
+router.post("/register", validateRoleName, async (req, res, next) => {
+    const { username, password } = req.body
+    const { role_name } = req
+    const hash = bcrypt.hashSync(password, BCRYPT_ROUNDS)
+        try {
+            const addUser = await Users.add({ username, password: hash, role_name })
+            res.status(201).json(addUser)
+        } catch (err) {
+            next(err)
+        }
+
+    /**
+     [POST] /api/auth/register { "username": "anna", "password": "1234", "role_name": "angel" }
+
+     response:
+     status 201
+     {
       "user"_id: 3,
       "username": "anna",
       "role_name": "angel"
     }
-   */
+     */
 });
 
 

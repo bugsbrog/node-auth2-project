@@ -12,9 +12,9 @@ const restricted = (req, res, next) => {
             message: 'Token invalid'
           })
         } else {
-          req.decodedJwt = decoded
-          next()
-        }
+            req.decodedJwt = decoded
+            next()
+          }
       })
     } else {
         next({
@@ -28,10 +28,10 @@ const only = role_name => (req, res, next) => {
   if (req.decodedJwt.role_name === role_name) {
     next()
   } else {
-    next({
-      status: 403,
-      message: 'This is not for you'
-    })
+      next({
+        status: 403,
+        message: 'This is not for you'
+      })
   }
 }
 
@@ -46,22 +46,36 @@ const checkUsernameExists = async (req, res, next) => {
             message: 'Invalid credentials'
           })
         } else {
-          next()
+            next()
         }
     } catch (err) {
         next(err)
     }
-  /*
-    If the username in req.body does NOT exist in the database
-    status 401
-    {
-      "message": "Invalid credentials"
-    }
-  */
 }
 
 
 const validateRoleName = (req, res, next) => {
+  const { role_name } = req.body
+    try {
+      if (!role_name || !role_name.trim()) {
+          req.role_name = 'student'
+          next()
+      } else if (role_name.trim() === 'admin') {
+          next({
+            status: 422,
+            message: 'Role name can not be admin'
+          })
+      } else if (role_name.trim().length > 32) {
+          next({
+            status: 422,
+            message: 'Role name can not be longer than 32 chars'
+          })
+      } else {
+          req.role_name = role_name.trim()
+      }
+    } catch (err) {
+        next(err)
+    }
   /*
     If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
 
