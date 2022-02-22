@@ -56,7 +56,6 @@ const checkUsernameExists = async (req, res, next) => {
 
 const validateRoleName = (req, res, next) => {
   const { role_name } = req.body
-    try {
       if (!role_name || !role_name.trim()) {
           req.role_name = 'student'
           next()
@@ -72,10 +71,8 @@ const validateRoleName = (req, res, next) => {
           })
       } else {
           req.role_name = role_name.trim()
+          next()
       }
-    } catch (err) {
-        next(err)
-    }
   /*
     If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
 
