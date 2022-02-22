@@ -20,7 +20,7 @@ const {
     }
   ]
  */
-router.get("/", restricted, only, (req, res, next) => { // done for you
+router.get("/", restricted, (req, res, next) => { // done for you
   Users.find()
     .then(users => {
       res.json(users);
