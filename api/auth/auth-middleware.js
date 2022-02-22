@@ -35,7 +35,6 @@ const only = role_name => (req, res, next) => {
   }
 }
 
-
 const checkUsernameExists = async (req, res, next) => {
   const { username } = req.body
     try {
@@ -46,13 +45,15 @@ const checkUsernameExists = async (req, res, next) => {
             message: 'Invalid credentials'
           })
         } else {
+            // Why do we need this to pass 5 tests?
+            // Maybe to make the password be defined? Because without it, the test says req.user.password is undefined
+            req.user = user
             next()
         }
     } catch (err) {
         next(err)
     }
 }
-
 
 const validateRoleName = (req, res, next) => {
   const { role_name } = req.body
@@ -73,24 +74,6 @@ const validateRoleName = (req, res, next) => {
           req.role_name = role_name.trim()
           next()
       }
-  /*
-    If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
-
-    If role_name is missing from req.body, or if after trimming it is just an empty string,
-    set req.role_name to be 'student' and allow the request to proceed.
-
-    If role_name is 'admin' after trimming the string:
-    status 422
-    {
-      "message": "Role name can not be admin"
-    }
-
-    If role_name is over 32 characters after trimming the string:
-    status 422
-    {
-      "message": "Role name can not be longer than 32 chars"
-    }
-  */
 }
 
 module.exports = {
